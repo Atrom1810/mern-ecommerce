@@ -2,12 +2,31 @@ main {
   min-height: 85vh;
 }
 
+h1 {
+  font-size: 1.7rem;
+  padding: 1rem 0;
+}
+
+h2 {
+  font-size: 1.3rem;
+  padding: 0.6rem 0;
+}
+
 h3 {
   padding: 1rem 0;
 }
 
+.text-color-green {
+  color: rgb(12, 179, 12);
+}
+
 .rating span {
   margin: 0.1rem;
+}
+
+.card-size {
+  width: 100%;
+  height: 560px;
 }
 
 .grow {
