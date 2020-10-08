@@ -5,11 +5,13 @@ import { Row, Col, Image, ListGroup, Button, Form } from 'react-bootstrap';
 import ShowMoreText from 'react-show-more-text';
 import Rating from '../components/Rating';
 import { listProductDetails } from '../actions/productActions';
+import { addToCart } from '../actions/cartActions';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 
 const ProductPage = ({ history, match }) => {
   const [quantity, setQuantity] = useState(1);
+  const [showMessage, setShowMessage] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -21,13 +23,17 @@ const ProductPage = ({ history, match }) => {
   }, [match, dispatch]);
 
   const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}?qty=${quantity}`);
-  };
+    dispatch(addToCart(match.params.id, quantity));
 
-  console.log(product.rating);
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 5000);
+  };
 
   return (
     <Fragment>
+      {showMessage ? <Message variant="info">{product.name} zum Warenkorb hinzugefügt</Message> : ''}
       <Link className="btn btn-dark my-3" to="/">
         <i className="fas fa-backward"></i>
       </Link>
