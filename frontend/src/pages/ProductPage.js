@@ -33,7 +33,13 @@ const ProductPage = ({ history, match }) => {
 
   return (
     <Fragment>
-      {showMessage ? <Message variant="info">{product.name} zum Warenkorb hinzugefügt</Message> : ''}
+      {showMessage ? (
+        <Message variant="info">
+          {quantity}x {product.name} zum Warenkorb hinzugefügt
+        </Message>
+      ) : (
+        ''
+      )}
       <Link className="btn btn-dark my-3" to="/">
         <i className="fas fa-backward"></i>
       </Link>

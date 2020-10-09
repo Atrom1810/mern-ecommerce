@@ -6,6 +6,9 @@ import Footer from './components/Footer';
 import Landing from './pages/Landing';
 import ProductPage from './pages/ProductPage';
 import Cart from './pages/Cart';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import UserProfilePage from './pages/UserProfilePage';
 
 const App = () => {
   return (
@@ -13,10 +16,13 @@ const App = () => {
       <Header />
       <main className="py-3">
         <Container>
-          <Route path="/" component={Landing} exact />
+          <Route path="/login" component={LoginPage} />
+          <Route path="/register" component={RegisterPage} />
+          <Route path="/profile" component={UserProfilePage} />
           <Route path="/product/:id" component={ProductPage} />
           {/* :id? -> optional if id is there or not */}
           <Route path="/cart/:id?" component={Cart} />
+          <Route path="/" component={Landing} exact />
         </Container>
       </main>
       <Footer />
