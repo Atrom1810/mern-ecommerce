@@ -12,6 +12,7 @@ import {
   ORDER_MYORDERS_SUCCESS,
   ORDER_MYORDERS_FAIL,
 } from '../constants/orderConstants';
+import { CART_RESET_CART } from '../constants/cartConstants';
 import axios from 'axios';
 
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -104,6 +105,10 @@ export const payOrder = (orderId, paymentResult) => async (dispatch, getState) =
       type: ORDER_PAY_SUCCESS,
       payload: data,
     });
+    dispatch({
+      type: CART_RESET_CART,
+    });
+    localStorage.removeItem('cartItems');
   } catch (error) {
     dispatch({
       type: ORDER_PAY_FAIL,
