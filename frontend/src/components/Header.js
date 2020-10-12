@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Badge, Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { logout } from '../actions/userActions';
@@ -7,6 +8,8 @@ import { logout } from '../actions/userActions';
 const Header = () => {
   const cart = useSelector((state) => state.cart);
   const userLogin = useSelector((state) => state.userLogin);
+
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -16,6 +19,7 @@ const Header = () => {
 
   const logoutHandler = () => {
     dispatch(logout());
+    history.push('/');
   };
 
   return (
