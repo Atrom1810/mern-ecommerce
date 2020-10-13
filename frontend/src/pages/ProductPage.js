@@ -1,22 +1,34 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Image, ListGroup, Button, Form } from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Button, Form, Modal } from 'react-bootstrap';
 import ShowMoreText from 'react-show-more-text';
 import Rating from '../components/Rating';
 import { listProductDetails } from '../actions/productActions';
 import { addToCart } from '../actions/cartActions';
+import { login } from '../actions/userActions';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { CART_RESET_CART } from '../constants/cartConstants';
 
 const ProductPage = ({ history, match }) => {
   const [quantity, setQuantity] = useState(1);
   const [showMessage, setShowMessage] = useState(false);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
 
+  const cart = useSelector((state) => state.cart);
+  const { cartItems } = cart;
+
   const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  const { userInfo, error: userError } = userLogin;
 
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
@@ -25,16 +37,84 @@ const ProductPage = ({ history, match }) => {
     dispatch(listProductDetails(match.params.id));
   }, [match, dispatch]);
 
+  useEffect(() => {
+    if (userInfo) {
+      handleClose();
+      if (cartItems[0]) {
+        if (userInfo._id !== cartItems[0].userId) {
+          localStorage.removeItem('cartItems');
+          dispatch({ type: CART_RESET_CART });
+        }
+      }
+    }
+  }, [userInfo, dispatch, cartItems]);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(login(email, password));
+  };
+
+  const onKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      dispatch(login(email, password));
+    }
+  };
+
+  const renderModal = () => {
+    return (
+      <Modal show={show} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Anmelden</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {userError && <Message variant="danger">{userError}</Message>}
+          <Form onSubmit={submitHandler} onKeyDown={onKeyDown}>
+            <Form.Group controlId="email">
+              <Form.Label>E-Mail</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="E-Mail Adresse"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group controlId="password">
+              <Form.Label>Passswort</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Passwort"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <p style={{ paddingRight: '30px' }}>
+            Neukunde? <Link to="/register">Registrieren</Link>
+          </p>
+          <Button variant="primary" onClick={submitHandler}>
+            Anmelden
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Abbrechen
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  };
+
   const addItemToCart = () => {
     if (userInfo) {
       addToCartHandler();
     } else {
-      history.push('/login');
+      handleShow();
     }
   };
 
   const addToCartHandler = () => {
-    dispatch(addToCart(match.params.id, quantity));
+    dispatch(addToCart(match.params.id, quantity, userInfo._id));
 
     setShowMessage(true);
     setTimeout(() => {
@@ -44,6 +124,7 @@ const ProductPage = ({ history, match }) => {
 
   return (
     <Fragment>
+      {renderModal()}
       {showMessage ? (
         <Message variant="info">
           {quantity}x {product.name} zum Warenkorb hinzugefügt

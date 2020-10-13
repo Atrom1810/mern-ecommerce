@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -24,10 +24,12 @@ const LoginPage = ({ location, history }) => {
 
   useEffect(() => {
     if (userInfo) {
-      history.goBack();
+      history.push(redirect);
       if (cartItems[0]) {
-        if (userInfo._id !== cartItems[0].userId) localStorage.removeItem('cartItems');
-        dispatch({ type: CART_RESET_CART });
+        if (userInfo._id !== cartItems[0].userId) {
+          localStorage.removeItem('cartItems');
+          dispatch({ type: CART_RESET_CART });
+        }
       }
     }
   }, [history, userInfo, redirect, cartItems, dispatch]);
@@ -73,4 +75,4 @@ const LoginPage = ({ location, history }) => {
   );
 };
 
-export default withRouter(LoginPage);
+export default LoginPage;
