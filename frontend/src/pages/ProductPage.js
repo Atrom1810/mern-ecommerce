@@ -25,17 +25,21 @@ const ProductPage = ({ history, match }) => {
     dispatch(listProductDetails(match.params.id));
   }, [match, dispatch]);
 
-  const addToCartHandler = () => {
+  const addItemToCart = () => {
     if (userInfo) {
-      dispatch(addToCart(match.params.id, quantity));
-
-      setShowMessage(true);
-      setTimeout(() => {
-        setShowMessage(false);
-      }, 5000);
+      addToCartHandler();
     } else {
       history.push('/login');
     }
+  };
+
+  const addToCartHandler = () => {
+    dispatch(addToCart(match.params.id, quantity));
+
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 5000);
   };
 
   return (
@@ -109,7 +113,7 @@ const ProductPage = ({ history, match }) => {
               )}
               <ListGroup.Item>
                 <Button
-                  onClick={addToCartHandler}
+                  onClick={addItemToCart}
                   className="btn-block"
                   type="button"
                   disabled={product.countInStock === 0}
