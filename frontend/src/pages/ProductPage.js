@@ -15,6 +15,9 @@ const ProductPage = ({ history, match }) => {
 
   const dispatch = useDispatch();
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
 
@@ -23,12 +26,16 @@ const ProductPage = ({ history, match }) => {
   }, [match, dispatch]);
 
   const addToCartHandler = () => {
-    dispatch(addToCart(match.params.id, quantity));
+    if (userInfo) {
+      dispatch(addToCart(match.params.id, quantity));
 
-    setShowMessage(true);
-    setTimeout(() => {
-      setShowMessage(false);
-    }, 5000);
+      setShowMessage(true);
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 5000);
+    } else {
+      history.push('/login');
+    }
   };
 
   return (
