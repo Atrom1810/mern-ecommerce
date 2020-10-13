@@ -115,8 +115,8 @@ const UserProfilePage = ({ location, history }) => {
                 <th>ID</th>
                 <th>DATUM</th>
                 <th>GESAMTPREIS</th>
-                <th>BEZAHLUNG</th>
-                <th>LIEFERUNG?</th>
+                <th>BEZAHLT AM</th>
+                <th>VERSENDET AM</th>
                 <th></th>
               </tr>
             </thead>
@@ -126,14 +126,14 @@ const UserProfilePage = ({ location, history }) => {
                   <td>{order._id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
                   <td>{order.totalPrice}</td>
-                  <td>
+                  <td style={{ color: 'green' }}>
                     {order.isPaid ? (
                       order.paidAt.substring(0, 10)
                     ) : (
                       <i className="fas fa-times" style={{ color: 'red' }}></i>
                     )}
                   </td>
-                  <td>
+                  <td style={{ color: 'green' }}>
                     {order.isDelivered ? (
                       order.deliveredAt.substring(0, 10)
                     ) : (

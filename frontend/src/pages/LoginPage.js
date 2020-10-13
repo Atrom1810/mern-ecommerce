@@ -6,6 +6,7 @@ import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
 import { login } from '../actions/userActions';
 import { Form, Row, Button, Col } from 'react-bootstrap';
+import { CART_RESET_CART } from '../constants/cartConstants';
 
 const LoginPage = ({ location, history }) => {
   const [email, setEmail] = useState('');
@@ -14,16 +15,22 @@ const LoginPage = ({ location, history }) => {
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
+  const cart = useSelector((state) => state.cart);
 
   const { loading, error, userInfo } = userLogin;
+  const { cartItems } = cart;
 
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
   useEffect(() => {
     if (userInfo) {
       history.push(redirect);
+      if (cartItems[0]) {
+        if (userInfo._id !== cartItems[0].userId) localStorage.removeItem('cartItems');
+        dispatch({ type: CART_RESET_CART });
+      }
     }
-  }, [history, userInfo, redirect]);
+  }, [history, userInfo, redirect, cartItems, dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
